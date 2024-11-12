@@ -7,10 +7,11 @@ const postRoutes = require("./routes/post");
 const commentRoutes = require("./routes/comment");
 const sessionMiddleware = require("./config/session");
 
-app.use(cors({
-    origin: 'http://cummnity-study.duckdns.org',
-    credentials: true
-  }
+app.use(cors(
+    {
+        origin: 'http://localhost:3000',
+        credentials: true
+    }
 ));
 app.use(express.json());
 
@@ -18,8 +19,8 @@ app.use(express.json());
 app.use(sessionMiddleware);
 
 // 서비스 라우팅
-app.use("/user", userRoutes);
-app.use("/post", postRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/posts", postRoutes);
 // app.use("/comment", commentRoutes);
 
 const PORT = 9000;

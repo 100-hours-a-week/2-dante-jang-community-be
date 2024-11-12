@@ -76,4 +76,5 @@ Temporary Items
 .history
 .ionide
 
-# End of https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,expressionengine
+# 모든 .env 파일 무시
+*.env
