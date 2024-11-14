@@ -1,17 +1,19 @@
 const session = require("express-session");
 const RedisStore = require("connect-redis").default; // 'default'로 접근
+require('dotenv').config();
+const { SESSION_SECRET_KEY } = process.env;
 
-const redisClient = require("./redis"); // redis 클라이언트를 따로 설정했다면 불러오기
+const redisClient = require("./redis");
 
 const sessionConfig = session({
-  store: new RedisStore({ client: redisClient }), // redis 클라이언트와 함께 store 설정
-  secret: "your_secret_key",
+  store: new RedisStore({ client: redisClient }),
+  secret: SESSION_SECRET_KEY,
   resave: false,
   saveUninitialized: false,
   cookie: {
     secure: false,
     httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24, // 24시간
+    maxAge: 604800000,
   },
 });
 

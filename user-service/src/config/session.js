@@ -1,7 +1,7 @@
 const session = require("express-session");
 const RedisStore = require("connect-redis").default;
 require('dotenv').config();
-const { SESSION_SECRET_KEY, SESSION_EXPIRATION_PERIOD } = process.env;
+const { SESSION_SECRET_KEY } = process.env;
 
 const redisClient = require("./redis");
 

@@ -4,12 +4,14 @@ const session = require("express-session");
 const app = express();
 const userRoutes = require("./routes/user");
 const postRoutes = require("./routes/post");
+const imageRoutes = require("./routes/image");
 const commentRoutes = require("./routes/comment");
 const sessionMiddleware = require("./config/session");
+require('dotenv').config();
 
 app.use(cors(
     {
-        origin: 'http://localhost:3000',
+        origin: process.env.DOMAIN_URL,
         credentials: true
     }
 ));
@@ -18,9 +20,9 @@ app.use(express.json());
 // 세션 설정
 app.use(sessionMiddleware);
 
-// 서비스 라우팅
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/posts", postRoutes);
+app.use("/api/v1/images", imageRoutes);
 // app.use("/comment", commentRoutes);
 
 const PORT = 9000;

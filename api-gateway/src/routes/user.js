@@ -4,8 +4,9 @@ const authMiddleware = require("../middleware/auth");
 const axios = require("axios");
 const FormData = require("form-data");
 const multer = require("multer");
+require('dotenv').config();
 
-const USER_SERVICE_URL = "http://localhost:9001/api/v1/users";
+const USER_SERVICE_URL = `${process.env.USER_SERVER_URL}/api/v1/users`;
 const upload = multer();
 
 router.post("/login", (req, res) => {

@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middleware/auth");
 const axios = require("axios");
+require('dotenv').config();
 
-const POST_SERVICE_URL = "http://localhost:9002/post";
+const POST_SERVICE_URL = `${process.env.POST_SERVER_URL}/api/v1/posts`;
 
 router.get("/list", (req, res)  => {
     axios.get(`${POST_SERVICE_URL}/list`, {})

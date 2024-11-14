@@ -7,11 +7,13 @@ exports.write = async (req, res) => {
     if (!userId || !content) {
       return res.status(400).json({ message: "user_id and content are required." });
     }
+
+    console.log(content);
   
     try {
       const [result] = await pool.execute(
         `
-          INSERT INTO post (user_id, title, content, writed_at, image_url)
+          INSERT INTO post (user_id, title, content, writed_at, image_id)
           VALUES (?, ?, ?, NOW(), ?)
         `
         , [userId, title, content, image_url || null]
