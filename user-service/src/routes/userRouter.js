@@ -13,7 +13,7 @@ router.post("/check-password", userController.checkPassword);
 router.get("", userController.userInfo);
 router.get("/check-email", userController.emailDuplicatedCheck);
 router.get("/check-name", userController.nameDuplicatedCheck);
-router.get("/internal", userController.userInfoInternal);
+router.get("/:userId", userController.userInfoInternal);
 
 router.patch("/change-profile", upload.single('profileImage'), userController.changeProfile);
 router.patch("/change-name", userController.changeName);

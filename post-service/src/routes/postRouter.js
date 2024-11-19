@@ -6,10 +6,11 @@ const router = express.Router();
 
 router.post("", postController.write);
 
-router.get("/list", postController.postList);
-router.get("", postController.postDetail);
-router.get("/modify", postController.modifyPostDetail);
+router.get("", postController.postList);
+router.get("/:postId", postController.postDetail);
 
-router.put("", postController.modify);
+router.put("/:postId", postController.modify);
+
+router.delete("/:postId/users/:userId", postController.deletePost);
 
 module.exports = router;

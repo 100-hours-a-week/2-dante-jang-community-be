@@ -131,19 +131,28 @@ exports.userInfo = async (req, res) => {
 };
 
 exports.userInfoInternal = async (req, res) => {
-    const userId = req.query.userId;
+    const { userId } = req.params;
 
     try {
-        const [rows] = await pool.execute("SELECT * FROM user WHERE user_id = ?", [userId]);
-        
+        const [rows] = await pool.execute("SELECT * FROM user WHERE user_id = ?", [userId]);        
         if (rows.length === 0) {
             return res.status(404).json({ error: "User not found" });
         }
-
         const user = rows[0];
         user.password = null;
 
-        res.json(user);
+        if (user.profile_id) {
+            try {
+                const profileResponse = await axios.get(`${IMAGE_SERVER_URL}/api/v1/images/${user.profile_id}`);
+                user.profile_url = profileResponse.data.url;
+            } catch (profileError) {
+                console.error("Error fetching profile image URL:", profileError);
+                user.profile_url = null;
+            }
+        } else {
+            user.profile_url = null;
+        }
+        res.json({user});
     } catch (error) {
         console.error("Get user info:", error);
         res.status(500).json({ error: "Get user info failed" });

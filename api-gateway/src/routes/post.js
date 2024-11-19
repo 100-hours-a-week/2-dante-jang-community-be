@@ -6,35 +6,21 @@ require('dotenv').config();
 
 const POST_SERVICE_URL = `${process.env.POST_SERVER_URL}/api/v1/posts`;
 
-router.get("/list", (req, res)  => {
-    axios.get(`${POST_SERVICE_URL}/list`, {})
+router.get("", (req, res)  => {
+    axios.get(`${POST_SERVICE_URL}`, {params: req.query})
         .then(response => res.json(response.data))
         .catch(error => res.status(error.response?.status || 500).json(error.response?.data || {}));
 });
 
-router.get("", (req, res) => {
-    axios.get(`${POST_SERVICE_URL}`, {
-        params: {
-            postId: req.query.postId,
-            userId: req.session.userId || null
-        }
-    })
+router.get("/:postId", async (req, res) => {
+    const { postId } = req.params;
+
+    axios.get(`${POST_SERVICE_URL}/${postId}`)
         .then(response => res.json(response.data))
         .catch(error => res.status(error.response?.status || 500).json(error.response?.data || {}));
 });
 
 router.use(authMiddleware);
-
-router.get("/modify", (req, res) => {
-    axios.get(`${POST_SERVICE_URL}`, {
-        params: {
-            postId: req.query.postId,
-            userId: req.session.userId
-        }
-    })
-        .then(response => res.json(response.data))
-        .catch(error => res.status(error.response?.status || 500).json(error.response?.data || {}));
-});
 
 
 router.post("", (req, res) => {
@@ -45,13 +31,22 @@ router.post("", (req, res) => {
         .catch(error => res.status(error.response?.status || 500).json(error.response?.data || {}));
 });
 
-router.put("", (req, res) => {
-    req.body.userId = req.session.userId;
-    req.body.postId = req.query.postId;
+router.put("/:postId", (req, res) => {
+    const { postId } = req.params;
 
-    axios.put(`${POST_SERVICE_URL}`, req.body)
+    req.body.userId = req.session.userId;
+    axios.put(`${POST_SERVICE_URL}/${postId}`, req.body)
         .then(response => res.json(response.data))
         .catch(error => res.status(error.response?.status || 500).json(error.response?.data || {}));
 });
+
+router.delete("/:postId", (req, res) => {
+    const { postId } = req.params;
+    const userId = req.session.userId;
+
+    axios.delete(`${POST_SERVICE_URL}/${postId}/users/${userId}`)
+        .then(response => res.json(response.data))
+        .catch(error => res.status(error.response?.status || 500).json(error.response?.data || {}));
+})
 
 module.exports = router;

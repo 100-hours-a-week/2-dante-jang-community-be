@@ -91,7 +91,7 @@ exports.deleteImage = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const [rows] = await pool.execute("SELECT url FROM `image` WHERE id = ?", [id]);
+        const [rows] = await pool.execute("SELECT url FROM `image` WHERE image_id = ?", [id]);
         if (rows.length === 0) {
             return res.status(404).json({ error: "Image not found" });
         }
@@ -105,7 +105,7 @@ exports.deleteImage = async (req, res) => {
         });
         await s3.s3Client.send(deleteCommand);
 
-        await pool.execute("DELETE FROM `image` WHERE id = ?", [id]);
+        await pool.execute("DELETE FROM `image` WHERE image_id = ?", [id]);
 
         res.status(200).json({ message: "Image deleted successfully" });
     } catch (error) {

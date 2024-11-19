@@ -11,6 +11,6 @@ router.get(`/:id`, imageController.getImage);
 
 router.put(`/:id`, upload.single('file'), imageController.updateImage);
 
-router.delete(``, imageController.deleteImage);
+router.delete(`/:id`, imageController.deleteImage);
 
 module.exports = router;

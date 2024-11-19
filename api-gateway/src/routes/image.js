@@ -13,10 +13,9 @@ router.use(authMiddleware);
 
 router.post("", upload.single('file'), async (req, res) => {
     try {
-        const fileName = req.fileName;
         const formData = new FormData();
         formData.append("file", req.file.buffer, {
-            filename: fileName,
+            filename: req.file.originalname,
             contentType: req.file.mimetype
         });
 
