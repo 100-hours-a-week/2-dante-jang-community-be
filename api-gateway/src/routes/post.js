@@ -12,7 +12,7 @@ router.get("", (req, res)  => {
         .catch(error => res.status(error.response?.status || 500).json(error.response?.data || {}));
 });
 
-router.get("/:postId", async (req, res) => {
+router.get("/:postId", (req, res) => {
     const { postId } = req.params;
 
     axios.get(`${POST_SERVICE_URL}/${postId}`)

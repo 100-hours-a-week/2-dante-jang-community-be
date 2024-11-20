@@ -10,8 +10,6 @@ exports.write = async (req, res) => {
         return res.status(400).json({ message: "user_id and content are required." });
     }
 
-    console.log(content);
-
     try {
         const [result] = await pool.execute(
             `
@@ -157,8 +155,6 @@ exports.postDetail = async (req, res) => {
     }
 
     try {
-        const commentList = [];
-
         const [result] = await pool.execute("SELECT * FROM `post` WHERE post_id = ? AND deleted_at IS NULL", [postId]);
         if (result.length === 0) {
             return res.status(404).json({ error: "Post not found" });
@@ -187,8 +183,7 @@ exports.postDetail = async (req, res) => {
         return res.status(200).json({
             message: `post : ${post.post_id}`,
             post: {...post},
-            user: userResult.user,
-            comments: {...commentList}
+            user: userResult.user
         });
     } catch (error) {
         console.error("Error retrieving post details:", error);

@@ -23,7 +23,7 @@ app.use(sessionMiddleware);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/posts", postRoutes);
 app.use("/api/v1/images", imageRoutes);
-// app.use("/comment", commentRoutes);
+app.use("/api/v1/comments", commentRoutes);
 
 const PORT = 9000;
 app.listen(PORT, () => {
