@@ -6,8 +6,9 @@ const router = express.Router();
 
 router.post("", postController.write);
 
-router.get("", postController.postList);
 router.get("/:postId", postController.postDetail);
+router.get("/users/:userId", postController.userPostList);
+router.get("", postController.postList);
 
 router.put("/:postId", postController.modify);
 

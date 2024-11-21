@@ -6,6 +6,7 @@ const userRoutes = require("./routes/user");
 const postRoutes = require("./routes/post");
 const imageRoutes = require("./routes/image");
 const commentRoutes = require("./routes/comment");
+const likeRoutes = require("./routes/like");
 const sessionMiddleware = require("./config/session");
 require('dotenv').config();
 
@@ -24,6 +25,7 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/posts", postRoutes);
 app.use("/api/v1/images", imageRoutes);
 app.use("/api/v1/comments", commentRoutes);
+app.use("/api/v1/likes", likeRoutes);
 
 const PORT = 9000;
 app.listen(PORT, () => {

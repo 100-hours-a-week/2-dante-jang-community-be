@@ -6,6 +6,14 @@ require('dotenv').config();
 
 const POST_SERVICE_URL = `${process.env.POST_SERVER_URL}/api/v1/posts`;
 
+router.get("/users/:userId", (req, res)  => {
+    const { userId } = req.params;
+
+    axios.get(`${POST_SERVICE_URL}/users/${userId}`, {params: req.query})
+        .then(response => res.json(response.data))
+        .catch(error => res.status(error.response?.status || 500).json(error.response?.data || {}));
+});
+
 router.get("", (req, res)  => {
     axios.get(`${POST_SERVICE_URL}`, {params: req.query})
         .then(response => res.json(response.data))

@@ -132,6 +132,49 @@ exports.postList = async (req, res) => {
     }
 };
 
+exports.userPostList = async (req, res) => {
+    const { userId } = req.params;
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = 30;
+    const offset = (page - 1) * limit;
+
+    try {
+        const [posts] = await pool.execute(`
+            SELECT post_id, user_id, title, written_at, image_id, view_count
+            FROM post
+            WHERE deleted_at IS NULL AND user_id = ?
+            ORDER BY written_at DESC
+            LIMIT ? OFFSET ?
+        `, [userId, limit, offset]);
+
+        const userResult = await fetchUserRequest(userId);
+        if (!userResult) {
+            res.status(404).json({ message: "User has been deleted" });
+        }
+
+        const postsWithUserNames = await Promise.all(posts.map(async (post) => {
+            if (post.image_id) {
+                const getImageResponse = await getImageRequest(post.image_id);
+                if (getImageResponse.imgUrl) {
+                    post.image_url = getImageResponse.imgUrl;
+                } else {
+                    post.image_url = null;
+                }
+            }
+
+            return {
+                post: {...post},
+                user: userResult.user
+            };
+        }));
+
+        res.status(200).json({message: `post list get success count : ${postsWithUserNames.length}`, posts : postsWithUserNames});
+    } catch (error) {
+        console.error("Error retrieving posts:", error);
+        res.status(500).json({ message: "Failed to retrieve posts" });
+    }
+};
+
 exports.postDetail = async (req, res) => {
     const { postId } = req.params;
 

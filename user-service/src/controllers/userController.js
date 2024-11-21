@@ -60,7 +60,7 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     const { email, password } = req.body;
     try {
-        const [rows] = await pool.execute("SELECT * FROM `user` WHERE email = ?", [email]);
+        const [rows] = await pool.execute("SELECT * FROM `user` WHERE email = ? AND deleted_at IS NULL", [email]);
         const user = rows[0];
 
         if (!user || !(await bcrypt.compare(password, user.password)) || user.deleted_at !== null) {
@@ -107,7 +107,10 @@ exports.userInfo = async (req, res) => {
     const userId = req.session.userId;
     console.log("User Info :" + req.session.userId);
     try {
-        const [rows] = await pool.execute("SELECT * FROM user WHERE user_id = ?", [userId]);
+        const [rows] = await pool.execute("SELECT * FROM user WHERE user_id = ? AND deleted_at IS NULL", [userId]);
+        if (rows.length == 0) {
+            return res.status(404).json({ message: "user not found" });
+        }
         const user = rows[0];
         user.password = null;
 
@@ -320,5 +323,35 @@ exports.deleteUser = async (req, res) => {
     } catch (error) {
         console.error("Error in deleting user:", error);
         res.status(500).json({ error: "User deletion failed" });
+    }
+};
+
+exports.userInfoWithName = async (req, res) => {
+    const { userName } = req.params;
+
+    try {
+        const [rows] = await pool.execute("SELECT * FROM user WHERE name = ? AND deleted_at IS NULL", [userName]);
+        if (rows.length == 0) {
+            return res.status(404).json({ message: "user not found" });
+        }
+        const user = rows[0];
+        user.password = null;
+
+        if (user.profile_id) {
+            try {
+                const profileResponse = await axios.get(`${IMAGE_SERVER_URL}/api/v1/images/${user.profile_id}`);
+                user.profile_url = profileResponse.data.url;
+            } catch (profileError) {
+                console.error("Error fetching profile image URL:", profileError);
+                user.profile_url = null;
+            }
+        } else {
+            user.profile_url = null;
+        }
+
+        res.status(200).json({ message: `Name : ${userName} find success`, user: user });
+    } catch (error) {
+        console.error("Get user info:", error);
+        res.status(500).json({ error: `Get Name : ${userName} info failed` });
     }
 };

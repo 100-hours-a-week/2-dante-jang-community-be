@@ -14,6 +14,7 @@ router.get("", userController.userInfo);
 router.get("/check-email", userController.emailDuplicatedCheck);
 router.get("/check-name", userController.nameDuplicatedCheck);
 router.get("/:userId", userController.userInfoInternal);
+router.get("/name/:userName", userController.userInfoWithName);
 
 router.patch("/change-profile", upload.single('profileImage'), userController.changeProfile);
 router.patch("/change-name", userController.changeName);

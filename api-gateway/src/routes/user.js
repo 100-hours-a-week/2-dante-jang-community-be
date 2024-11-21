@@ -46,6 +46,13 @@ router.get("/check-name", (req, res) => {
         });
 });
 
+router.get("/name/:userName", (req, res) => {
+    const {userName} = req.params;
+    axios.get(`${USER_SERVICE_URL}/name/${userName}`)
+        .then(response => res.json(response.data))
+        .catch(error => res.status(error.response?.status || 500).json(error.response?.data || {}));
+});
+
 // 인증 후 진행
 router.use(authMiddleware);
 
